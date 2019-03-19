@@ -6,14 +6,17 @@ type DataProvider interface {
 	Save(collectionName string, data []byte) (map[string]interface{}, error)
 
 	//Update update record
-	Update(collectionName, id string, data []byte) (map[string]interface{}, error)
+	Update(collectionName string, id string, data []byte) (map[string]interface{}, error)
 
 	//Delete delete record
-	Delete(collectionName, id string) (map[string]interface{}, error)
+	Delete(collectionName string, id string) (map[string]interface{}, error)
 
 	//Find find record based on provided identifier
-	Find(collectionName, id string) (map[string]interface{}, error)
+	Find(collectionName string, id string) (map[string]interface{}, error)
 
 	//FindAll search for and obtain records
-	FindAll(collectionName, filter, sort, order string, limit int, page int, selects []string) ([]interface{}, error)
+	FindAll(collectionName string, searchParams map[string]string) ([]interface{}, error)
+
+	//FindAll search for and obtain records
+	Count(collectionName string, filter string) (int, error)
 }

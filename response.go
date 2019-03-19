@@ -53,10 +53,10 @@ func (r Response) XML() []byte {
 //
 // For XML output header is attached.
 func (r Response) Format(contentType string) []byte {
-	switch strings.ToLower(contentType) {
-	case "application/xml", "application/xml; charset=utf-8", "text/xml; charset=utf-8", "text/xml":
+	switch strings.ToLower(strings.Replace(contentType, " ", "", -1)) {
+	case "application/xml", "application/xml;charset=utf-8", "text/xml;charset=utf-8", "text/xml":
 		return []byte(xml.Header + string(r.XML()))
-	case "application/json", "application/json; charset=utf-8":
+	case "application/json", "application/json;charset=utf-8":
 		return r.JSON()
 	}
 	//if all else fails dump string

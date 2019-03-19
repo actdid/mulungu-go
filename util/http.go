@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -125,6 +127,26 @@ func HTTPPost(ctx context.Context, URL string, headers map[string]string, body [
 	return HTTPRequest(ctx, request)
 }
 
+//HTTPGet executes http get using url fetch
+func HTTPGet(ctx context.Context, URL string, headers map[string]string, searchParams map[string]string) (*http.Response, error) {
+	request, requestError := HTTPNewRequest(ctx, http.MethodGet, URL, headers, []byte(""), searchParams)
+	if requestError != nil {
+		logger.Errorf(ctx, "http util", "request init error %s", requestError.Error())
+		return nil, requestError
+	}
+	return HTTPRequest(ctx, request)
+}
+
+//HTTPPut executes http put using url fetch
+func HTTPPut(ctx context.Context, URL string, headers map[string]string, body []byte, searchParams map[string]string) (*http.Response, error) {
+	request, requestError := HTTPNewRequest(ctx, http.MethodPut, URL, headers, body, searchParams)
+	if requestError != nil {
+		logger.Errorf(ctx, "http util", "request init error %s", requestError.Error())
+		return nil, requestError
+	}
+	return HTTPRequest(ctx, request)
+}
+
 //WriteJSON outputs json to response writer and sets up the right mimetype
 func WriteJSON(w http.ResponseWriter, data interface{}, statusCode int) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -175,7 +197,9 @@ func SetEnvironmentOnNamespace(ctx context.Context, namespace string, r *http.Re
 
 //SetNamespace  attaches environment in request to provided spacename
 func SetNamespace(ctx context.Context, r *http.Request) string {
-	namespace := r.URL.Query().Get("ns")
+	namespace := HTTPGetQueryValue(r, "ns", "")
+
+	log.Debugf(ctx, "namespace obtained from url query parameter ns, namespace:%s query:%#v", namespace, r.URL.Query())
 
 	if namespace != "" {
 		return namespace
@@ -218,10 +242,18 @@ func HTTPGetPath(r *http.Request) string {
 }
 
 //HTTPCopyRequestHeader from original request
-func HTTPCopyRequestHeader(originalRequest *http.Request, candicateRequest *http.Request) *http.Request {
+func HTTPCopyRequestHeader(originalRequest *http.Request, candicateRequest *http.Request, replace map[string]string) *http.Request {
 	for key, headerValue := range originalRequest.Header {
 		for _, value := range headerValue {
-			candicateRequest.Header.Set(key, value)
+			for headerKey, headerReplaceKey := range replace {
+				if key == headerKey {
+					candicateRequest.Header.Set(headerReplaceKey, value)
+				} else {
+					candicateRequest.Header.Set(key, value)
+				}
+			}
+
+			//google strips away these headers,
 		}
 	}
 
@@ -245,4 +277,24 @@ func HTTPGetServiceHost(r *http.Request, defaultServiceHost string) string {
 		return defaultServiceHost
 	}
 	return serviceHost
+}
+
+//HTTPGetQueryValue returns http query string by key
+func HTTPGetQueryValue(r *http.Request, key, defaultValue string) string {
+	queryValue := r.URL.Query().Get(key)
+	if queryValue == "" {
+		return defaultValue
+	}
+	return queryValue
+}
+
+//HTTPBodyAsInt64 reads body information as int64
+func HTTPBodyAsInt64(r io.Reader) int {
+	bytes, err := ioutil.ReadAll(r)
+
+	if err == nil {
+		return NumberizeString(string(bytes)).(int)
+	}
+
+	return 0
 }

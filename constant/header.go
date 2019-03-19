@@ -14,4 +14,6 @@ const (
 	HeaderEnvironment               = "X-Environment"
 	HeaderServiceHost               = "X-Service-Host"
 	HeaderRequestSource             = "X-Request-Source"
+	HeaderPubSub                    = "X-PubSub"
+	HeaderCron                      = "X-Appengine-Cron"
 )

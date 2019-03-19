@@ -61,7 +61,7 @@ func (c *Controller) HydrateModel(ctx context.Context, readCloser io.ReadCloser,
 
 //WriteRaw enables on to send raw content and gives control over content type
 func (c *Controller) WriteRaw(ctx context.Context, w http.ResponseWriter, r *http.Request, statusCode int, bytes []byte, contentType string) {
-	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Content-Type", strings.ToLower(strings.Replace(contentType, " ", "", -1)))
 	w.WriteHeader(statusCode)
 	w.Write(bytes)
 }
@@ -71,11 +71,11 @@ func (c *Controller) Write(ctx context.Context, w http.ResponseWriter, r *http.R
 	contentType := strings.TrimSpace(strings.ToLower(r.Header.Get(constant.HeaderContentType)))
 	logger.Infof(ctx, "Base Controller", "writing content type: %s content bytes: %#v", contentType, bytes)
 
-	switch contentType {
-	case "application/xml", "application/xml; charset=utf-8", "text/xml; charset=utf-8", "text/xml":
+	switch strings.ToLower(strings.Replace(contentType, " ", "", -1)) {
+	case "application/xml", "application/xml;charset=utf-8", "text/xml;charset=utf-8", "text/xml":
 		logger.Infof(ctx, "Base Controller", "writing XML content bytes: %s", string(bytes))
 		c.WriteXML(ctx, w, statusCode, bytes)
-	case "application/json", "application/json; charset=utf-8":
+	case "application/json", "application/json;charset=utf-8":
 		logger.Infof(ctx, "Base Controller", "writing JSON content bytes: %s", string(bytes))
 		c.WriteJSON(ctx, w, statusCode, bytes)
 	default:
@@ -98,23 +98,36 @@ func (c *Controller) WriteError(ctx context.Context, w http.ResponseWriter, r *h
 	return
 }
 
+//WriteResponse converts values in mulungu.Response{message,headers,statusCode}
+func (c *Controller) WriteResponse(ctx context.Context, w http.ResponseWriter, response Response) {
+
+	if headers, ok := response["headers"]; ok {
+		for key, value := range headers.(map[string]interface{}) {
+			w.Header().Set(key, value.(string))
+		}
+	}
+
+	w.WriteHeader(response["statusCode"].(int))
+	w.Write([]byte(util.JSONGetString(ctx, response, "message")))
+}
+
 //WriteText respond to request
 func (c *Controller) WriteText(ctx context.Context, w http.ResponseWriter, statusCode int, bytes []byte) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Header().Set("Content-Type", "text/plain;charset=utf-8")
 	w.WriteHeader(statusCode)
 	w.Write(bytes)
 }
 
 //WriteJSON respond to request
 func (c *Controller) WriteJSON(ctx context.Context, w http.ResponseWriter, statusCode int, bytes []byte) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	w.WriteHeader(statusCode)
 	w.Write(bytes)
 }
 
 //WriteXML respond to request
 func (c *Controller) WriteXML(ctx context.Context, w http.ResponseWriter, statusCode int, bytes []byte) {
-	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+	w.Header().Set("Content-Type", "application/xml;charset=utf-8")
 	w.WriteHeader(statusCode)
 	w.Write(bytes)
 }
@@ -187,5 +200,5 @@ func (c *Controller) Namespace(ctx context.Context, r *http.Request) string {
 
 //Context returns request context
 func (c *Controller) Context(r *http.Request) context.Context {
-	return AppEngineServer.Context(r)
+	return util.ContextAppEngine(r)
 }

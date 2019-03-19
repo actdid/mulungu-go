@@ -68,15 +68,15 @@ func ResponseToMap(r *http.Response) (map[string]interface{}, error) {
 
 	contentType := strings.TrimSpace(strings.ToLower(r.Header.Get(constant.HeaderContentType)))
 
-	switch contentType {
-	case "application/xml", "application/xml; charset=utf-8":
+	switch strings.ToLower(strings.Replace(contentType, " ", "", -1)) {
+	case "application/xml", "application/xml;charset=utf-8":
 		return XMLMapStringInterface(r.Body)
-	case "application/json", "application/json; charset=utf-8":
+	case "application/json", "application/json;charset=utf-8":
 		return JSONMapStringInterface(r.Body)
 	}
 
 	return nil, fmt.Errorf("Response Error: Failed to decode accepted content types [%s,%s,%s,%s] found (%s)",
-		"application/xml", "application/xml; charset=utf-8", "application/json", "application/json; charset=utf-8",
+		"application/xml", "application/xml;charset=utf-8", "application/json", "application/json;charset=utf-8",
 		contentType)
 }
 
@@ -86,15 +86,15 @@ func RquestToMap(r *http.Request) (map[string]interface{}, error) {
 
 	contentType := strings.TrimSpace(strings.ToLower(r.Header.Get(constant.HeaderContentType)))
 
-	switch contentType {
-	case "application/xml", "application/xml; charset=utf-8":
+	switch strings.ToLower(strings.Replace(contentType, " ", "", -1)) {
+	case "application/xml", "application/xml;charset=utf-8":
 		return XMLMapStringInterface(r.Body)
-	case "application/json", "application/json; charset=utf-8":
+	case "application/json", "application/json;charset=utf-8":
 		return JSONMapStringInterface(r.Body)
 	}
 
 	return nil, fmt.Errorf("Response Error: Failed to decode accepted content types [%s,%s,%s,%s] found (%s)",
-		"application/xml", "application/xml; charset=utf-8", "application/json", "application/json; charset=utf-8",
+		"application/xml", "application/xml;charset=utf-8", "application/json", "application/json;charset=utf-8",
 		contentType)
 }
 
@@ -131,6 +131,7 @@ func JSONMapStringInterface(r io.Reader) (map[string]interface{}, error) {
 //ToMapStringInterface converts io.Reader to map[string]interface
 func ToMapStringInterface(r io.Reader) (map[string]interface{}, error) {
 	results := make(map[string]interface{})
+
 	decoder := json.NewDecoder(r)
 	decoder.UseNumber()
 	decodeErr := decoder.Decode(&results)

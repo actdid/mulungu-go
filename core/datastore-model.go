@@ -47,8 +47,13 @@ func (ds *DatastoreModel) Find(id string) (map[string]interface{}, error) {
 }
 
 //FindAll search for and obtain records
-func (ds *DatastoreModel) FindAll(filter, sort, order string, limit int, page int, selects []string) ([]interface{}, error) {
-	return ds.DataProvider.FindAll(ds.Kind, filter, sort, order, limit, page, selects)
+func (ds *DatastoreModel) FindAll(searchParams map[string]string) ([]interface{}, error) {
+	return ds.DataProvider.FindAll(ds.Kind, searchParams)
+}
+
+//Count count records based on filter
+func (ds *DatastoreModel) Count(filter string) (int, error) {
+	return ds.DataProvider.Count(ds.Kind, filter)
 }
 
 //Timestamp timestamps record

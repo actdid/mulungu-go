@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"reflect"
 	"strconv"
 	"strings"
@@ -97,14 +98,54 @@ func ToString(subject interface{}) string {
 	return ""
 }
 
-//NumberizeString converts string to either int or float
+//AsFloat64
+func AsFloat64(subject interface{}) float64 {
+	var subjectFloat64 = 0.0
+	if ReflectIsKindJSONNumber(subject) == true {
+		subjectFloat64, _ = subject.(json.Number).Float64()
+	} else {
+		subjectFloat64 = subject.(float64)
+	}
+
+	return subjectFloat64
+}
+
+//NumberizeString converts json.Number, string to either int or float
 func NumberizeString(subject interface{}) interface{} {
-	if govalidator.IsInt(subject.(string)) {
-		return StringToInt(subject.(string))
-	} else if govalidator.IsFloat(subject.(string)) {
-		return StringToFloat64(subject.(string))
+	var subjectStringified string
+
+	if ReflectIsKindJSONNumber(subject) == true {
+		subjectStringified = subject.(json.Number).String()
+	} else {
+		subjectStringified = subject.(string)
+	}
+
+	if govalidator.IsInt(subjectStringified) {
+		return StringToInt(subjectStringified)
+	} else if govalidator.IsFloat(subjectStringified) {
+		return StringToFloat64(subjectStringified)
 	}
 	return subject
+}
+
+//NumberizeJSONNumberInt64 converts json number to int64
+func NumberizeJSONNumberInt64(subject interface{}) int64 {
+	if ReflectIsKindJSONNumber(subject) == true {
+		number, err := subject.(json.Number).Int64()
+		if err != nil {
+			return 0
+		}
+		return number
+	}
+	return 0
+}
+
+//NumberizeJSONNumberString converts json number to int64
+func NumberizeJSONNumberString(subject interface{}) string {
+	if ReflectIsKindJSONNumber(subject) == true {
+		return subject.(json.Number).String()
+	}
+	return ""
 }
 
 //StringTobyte converts string t byte

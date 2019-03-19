@@ -5,16 +5,28 @@ import (
 	"fmt"
 	"html/template"
 	"strings"
+	"time"
 
 	"golang.org/x/net/context"
 
 	"github.com/edgedagency/mulungu/logger"
+	"github.com/uniplaces/carbon"
 )
 
 //TemplateParse parses content data
 func TemplateParse(ctx context.Context, source string, data interface{}) string {
+
+	//custom functions
+	funcMap := template.FuncMap{"date": func(value, format string) string {
+		parsedDate, _ := time.Parse(carbon.RFC3339Format, value)
+		logger.Debugf(ctx, "template parse util", "date: %s parsed: %s format: %s", value, parsedDate.String(), format)
+		return parsedDate.Format(format)
+	}, "trim": func(value string) string {
+		return strings.TrimSpace(value)
+	}}
+
 	templateIdentifier := strings.Join([]string{"template", GenerateRandomCode(5, "")}, "")
-	t, err := template.New(templateIdentifier).Parse(source)
+	t, err := template.New(templateIdentifier).Funcs(funcMap).Option("missingkey=zero").Parse(source)
 
 	logger.Debugf(ctx, "template parse util", "parsing template, templateIdentifier: %s data: %#v", templateIdentifier, data)
 

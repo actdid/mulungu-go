@@ -4,13 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/edgedagency/mulungu/constant"
-	"github.com/edgedagency/mulungu/logger"
 	"github.com/edgedagency/mulungu/middleware"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
-	"golang.org/x/net/context"
-	"google.golang.org/appengine"
 )
 
 //AppEngineServer representation of Google App Engine Server
@@ -31,7 +27,7 @@ type AppEngine struct {
 
 //NewAppEngine create a new appengine server
 func NewAppEngine() *AppEngine {
-	return &AppEngine{router: mux.NewRouter(), chain: alice.New(middleware.Logging)}
+	return &AppEngine{router: mux.NewRouter(), chain: alice.New(middleware.Logging, middleware.Namespace)}
 }
 
 //Start sets up http handler with register handlers
@@ -57,23 +53,23 @@ func (s *AppEngine) HandlerFunc(path string, f func(w http.ResponseWriter, r *ht
 	return s.router.HandleFunc(path, f)
 }
 
-//Context returns context from request
-func (s *AppEngine) Context(r *http.Request) context.Context {
-	context := appengine.NewContext(r)
-	//wrap context in namespace if namespace is on request
-	namespace := r.Header.Get(constant.HeaderNamespace)
-	if namespace != "" {
-		logger.Debugf(context, "appengine server", "wrapping context with namespace %s", namespace)
-		wrappedContext, wrappingNamespaceError := appengine.Namespace(context, namespace)
-		if wrappingNamespaceError != nil {
-			logger.Criticalf(context, "appengine server", "failed to wrap namespace in context %s", wrappingNamespaceError.Error())
-		} else {
-			return wrappedContext
-		}
-	}
-
-	return context
-}
+// //Context returns context from request
+// func (s *AppEngine) Context(r *http.Request) context.Context {
+// 	context := appengine.NewContext(r)
+// 	//wrap context in namespace if namespace is on request
+// 	namespace := r.Header.Get(constant.HeaderNamespace)
+// 	if namespace != "" {
+// 		logger.Debugf(context, "appengine server", "wrapping context with namespace %s", namespace)
+// 		wrappedContext, wrappingNamespaceError := appengine.Namespace(context, namespace)
+// 		if wrappingNamespaceError != nil {
+// 			logger.Criticalf(context, "appengine server", "failed to wrap namespace in context %s", wrappingNamespaceError.Error())
+// 		} else {
+// 			return wrappedContext
+// 		}
+// 	}
+//
+// 	return context
+// }
 
 //AppEngineServiceURL this returns an app spot host
 func AppEngineServiceURL(host, service, version string) string {

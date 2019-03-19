@@ -101,9 +101,9 @@ func (dp *ArangodbDataProvider) Find(collectionName string, id string) (map[stri
 }
 
 //FindAll search for and obtain records
-func (dp *ArangodbDataProvider) FindAll(collectionName string, filter string, sort string, order string, limit int, page int, selects []string) ([]interface{}, error) {
+func (dp *ArangodbDataProvider) FindAll(collectionName string, searchParams map[string]string) ([]interface{}, error) {
 
-	response, responseError := dp.execute(collectionName, http.MethodGet, nil, map[string]string{"filter": filter}, nil)
+	response, responseError := dp.execute(collectionName, http.MethodGet, nil, searchParams, nil)
 
 	if responseError != nil {
 		logger.Errorf(dp.Context, "Arangodb Data Provider", "execution error %s", responseError.Error())
@@ -119,6 +119,20 @@ func (dp *ArangodbDataProvider) FindAll(collectionName string, filter string, so
 	logger.Debugf(dp.Context, "Arangodb Data Provider", "record found %#v", reponseMap)
 
 	return reponseMap, nil
+}
+
+//Count return total number of records that match filter
+func (dp *ArangodbDataProvider) Count(collectionName string, filter string) (int, error) {
+
+	response, responseError := dp.execute(collectionName, http.MethodGet, nil, map[string]string{"filter": filter}, []string{"count"})
+
+	if responseError != nil {
+		logger.Errorf(dp.Context, "Arangodb Data Provider", "execution error %s", responseError.Error())
+		return 0, responseError
+	}
+
+	return util.HTTPBodyAsInt64(response.Body), nil
+
 }
 
 func (dp *ArangodbDataProvider) addQueryParam(queryParams map[string]string, key string, value interface{}) map[string]string {

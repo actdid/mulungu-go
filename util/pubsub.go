@@ -77,14 +77,10 @@ func PubSubTopicAttributes(ctx context.Context, data map[string]interface{}) map
 
 //PubSubTopicSubscription returns topic subscription information namespace and topic
 func PubSubTopicSubscription(ctx context.Context, data map[string]interface{}) []string {
-
-	if dataElement, ok := data["subscription"]; ok {
-		subscription := dataElement.(string)
-		subscription = subscription[(strings.LastIndex(subscription, "/") + 1):]
-		logger.Debugf(ctx, "pubsub util", "subscription %s", subscription)
-		return strings.Split(subscription, "-")
+	subscription := JSONGetString(ctx, data, "subscription")
+	if subscription != "" {
+		return strings.Split(subscription[(strings.LastIndex(subscription, "/")+1):], "-")
 	}
-
 	return nil
 }
 

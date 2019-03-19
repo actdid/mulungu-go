@@ -1,11 +1,10 @@
 package mulungu
 
 import (
-	"golang.org/x/net/context"
-
 	"github.com/edgedagency/mulungu/core"
 	"github.com/edgedagency/mulungu/logger"
 	"github.com/edgedagency/mulungu/util"
+	"golang.org/x/net/context"
 )
 
 //Service represenetation of a service
@@ -52,12 +51,40 @@ func (s *Service) Find(id string) (map[string]interface{}, error) {
 }
 
 //FindAll finds all service from datastore
-func (s *Service) FindAll(filter string) (interface{}, error) {
+func (s *Service) FindAll(filter string) ([]interface{}, error) {
 
 	logger.Debugf(s.Context(), "service service", "finding all %s", filter)
 
 	datastoreModel := core.NewDatastoreModel(s.Context(), s.Namespace(), s.Kind(), nil)
-	responseRecord, responseError := datastoreModel.FindAll(filter, "", "", 0, 0, nil)
+	responseRecord, responseError := datastoreModel.FindAll(core.NewSearchParam().Add("filter", filter).AsMap())
+
+	if responseError != nil {
+		return nil, responseError
+	}
+
+	return responseRecord, nil
+}
+
+//Update returns service based on id
+func (s *Service) Update(id string, record map[string]interface{}) (map[string]interface{}, error) {
+
+	//2. save record
+	datastoreModel := core.NewDatastoreModel(s.Context(), s.Namespace(), s.Kind(), record)
+	responseRecord, responseError := datastoreModel.Update(id)
+
+	if responseError != nil {
+		return nil, responseError
+	}
+
+	return responseRecord, nil
+}
+
+//Delete returns service based on id
+func (s *Service) Delete(id string) (map[string]interface{}, error) {
+
+	//2. save record
+	datastoreModel := core.NewDatastoreModel(s.Context(), s.Namespace(), s.Kind(), nil)
+	responseRecord, responseError := datastoreModel.Delete(id)
 
 	if responseError != nil {
 		return nil, responseError
@@ -69,6 +96,17 @@ func (s *Service) FindAll(filter string) (interface{}, error) {
 //Publish publish to topic
 func (s *Service) Publish(topic string, record map[string]interface{}, attributes map[string]string) (string, error) {
 	publishID, publishErr := util.PubSubTopicPublish(s.Context(), util.PubSubTopicID(s.Namespace(), topic), record, attributes)
+	if publishErr != nil {
+		logger.Errorf(s.Context(), "service service", "failed to publish record created %s", publishErr.Error())
+		return "", publishErr
+	}
+	logger.Debugf(s.Context(), "service service", "published record created, publish id %s", publishID)
+	return publishID, nil
+}
+
+//PublishNoNamespace meant to replace publish feature, records published already have a namespace, infer namespace
+func (s *Service) PublishNoNamespace(topic string, record map[string]interface{}, attributes map[string]string) (string, error) {
+	publishID, publishErr := util.PubSubTopicPublish(s.Context(), topic, record, attributes)
 	if publishErr != nil {
 		logger.Errorf(s.Context(), "service service", "failed to publish record created %s", publishErr.Error())
 		return "", publishErr
