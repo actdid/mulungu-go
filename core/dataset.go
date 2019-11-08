@@ -1,6 +1,6 @@
 package core
 
-import "github.com/actdid/mulungu/util"
+import "github.com/actdid/mulungu-go/util"
 
 //Dataset a record database record
 type Dataset map[string]interface{}

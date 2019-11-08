@@ -1,6 +1,6 @@
 package core
 
-import "github.com/actdid/mulungu/constant"
+import "github.com/actdid/mulungu-go/constant"
 
 //Error struct used to report model errors
 type Error struct {

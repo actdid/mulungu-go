@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"html/template"
 
-	"github.com/actdid/mulungu/util"
+	"github.com/actdid/mulungu-go/util"
 )
 
 //TemplateParseHTMLFile reads HTML file and parses

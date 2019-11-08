@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/actdid/mulungu/constant"
+	"github.com/actdid/mulungu-go/constant"
 )
 
 //TokenSecret FIXME:obtain from application confiugrations logic, should be stored in datastore as part of application setup sequence

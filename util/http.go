@@ -15,8 +15,8 @@ import (
 	"google.golang.org/appengine/log"
 	"google.golang.org/appengine/urlfetch"
 
-	"github.com/actdid/mulungu/constant"
-	"github.com/actdid/mulungu/logger"
+	"github.com/actdid/mulungu-go/constant"
+	"github.com/actdid/mulungu-go/logger"
 	"github.com/gorilla/mux"
 	"golang.org/x/net/context"
 )

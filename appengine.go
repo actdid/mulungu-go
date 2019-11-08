@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/actdid/mulungu/middleware"
+	"github.com/actdid/mulungu-go/middleware"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
 )

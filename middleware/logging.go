@@ -3,8 +3,8 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/actdid/mulungu/constant"
-	"github.com/actdid/mulungu/logger"
+	"github.com/actdid/mulungu-go/constant"
+	"github.com/actdid/mulungu-go/logger"
 
 	"google.golang.org/appengine"
 )

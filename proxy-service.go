@@ -3,8 +3,8 @@ package mulungu
 import (
 	"net/http"
 
-	"github.com/actdid/mulungu/logger"
-	"github.com/actdid/mulungu/util"
+	"github.com/actdid/mulungu-go/logger"
+	"github.com/actdid/mulungu-go/util"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 )

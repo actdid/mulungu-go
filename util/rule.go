@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/actdid/mulungu/constant"
-	"github.com/actdid/mulungu/logger"
+	"github.com/actdid/mulungu-go/constant"
+	"github.com/actdid/mulungu-go/logger"
 
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"

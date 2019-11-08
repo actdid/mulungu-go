@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/actdid/mulungu/constant"
-	"github.com/actdid/mulungu/logger"
-	"github.com/actdid/mulungu/util"
+	"github.com/actdid/mulungu-go/constant"
+	"github.com/actdid/mulungu-go/logger"
+	"github.com/actdid/mulungu-go/util"
 	"golang.org/x/net/context"
 )
 
