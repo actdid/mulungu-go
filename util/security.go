@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/edgedagency/mulungu/constant"
-	"github.com/edgedagency/mulungu/logger"
+	"github.com/actdid/mulungu/constant"
+	"github.com/actdid/mulungu/logger"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/net/context"
 )

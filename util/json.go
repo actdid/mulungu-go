@@ -2,7 +2,7 @@ package util
 
 import (
 	"github.com/buger/jsonparser"
-	"github.com/edgedagency/mulungu/logger"
+	"github.com/actdid/mulungu/logger"
 	"golang.org/x/net/context"
 )
 

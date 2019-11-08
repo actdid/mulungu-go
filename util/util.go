@@ -15,7 +15,7 @@ import (
 	"strings"
 
 	"github.com/clbanning/mxj"
-	"github.com/edgedagency/mulungu/constant"
+	"github.com/actdid/mulungu/constant"
 
 	"golang.org/x/crypto/bcrypt"
 )

@@ -1,6 +1,6 @@
 package core
 
-import "github.com/edgedagency/mulungu/util"
+import "github.com/actdid/mulungu/util"
 
 //Dataset a record database record
 type Dataset map[string]interface{}

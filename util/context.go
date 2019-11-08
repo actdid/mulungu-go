@@ -3,8 +3,8 @@ package util
 import (
 	"net/http"
 
-	"github.com/edgedagency/mulungu/constant"
-	"github.com/edgedagency/mulungu/logger"
+	"github.com/actdid/mulungu/constant"
+	"github.com/actdid/mulungu/logger"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 )

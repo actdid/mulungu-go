@@ -1,9 +1,9 @@
 package mulungu
 
 import (
-	"github.com/edgedagency/mulungu/core"
-	"github.com/edgedagency/mulungu/logger"
-	"github.com/edgedagency/mulungu/util"
+	"github.com/actdid/mulungu/core"
+	"github.com/actdid/mulungu/logger"
+	"github.com/actdid/mulungu/util"
 	"golang.org/x/net/context"
 )
 

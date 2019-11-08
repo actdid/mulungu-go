@@ -3,9 +3,9 @@ package core
 import (
 	"time"
 
-	"github.com/edgedagency/mulungu/logger"
-	"github.com/edgedagency/mulungu/provider"
-	"github.com/edgedagency/mulungu/util"
+	"github.com/actdid/mulungu/logger"
+	"github.com/actdid/mulungu/provider"
+	"github.com/actdid/mulungu/util"
 	"golang.org/x/net/context"
 )
 

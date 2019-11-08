@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/edgedagency/mulungu/logger"
-	"github.com/edgedagency/mulungu/util"
+	"github.com/actdid/mulungu/logger"
+	"github.com/actdid/mulungu/util"
 	"google.golang.org/appengine/urlfetch"
 )
 

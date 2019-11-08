@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/edgedagency/mulungu/logger"
+	"github.com/actdid/mulungu/logger"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 )

@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/edgedagency/mulungu/logger"
+	"github.com/actdid/mulungu/logger"
 	"github.com/uniplaces/carbon"
 )
 

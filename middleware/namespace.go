@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/edgedagency/mulungu/constant"
-	"github.com/edgedagency/mulungu/logger"
-	"github.com/edgedagency/mulungu/util"
+	"github.com/actdid/mulungu/constant"
+	"github.com/actdid/mulungu/logger"
+	"github.com/actdid/mulungu/util"
 	"golang.org/x/net/context"
 )
 
